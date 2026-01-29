@@ -4,7 +4,7 @@ import { Calendar, Users, Clock, Star } from 'lucide-react';
 export default function App() {
   return (
     <div className="app-container">
-      {/* IMAGEM DE FUNDO FIXA EM TODO O SITE */}
+      
       <div className="main-bg">
         <img src="/barbearia.jpg" alt="Background" />
       </div>
