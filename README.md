@@ -1,73 +1,58 @@
-# React + TypeScript + Vite
+# 💈 AgendaPro - Sistema de Agendamento Premium
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+O **AgendaPro** é uma plataforma de gestão de agendamentos inspirada em sistemas como o Booksy, focada em barbearias e estabelecimentos de estética. O projeto oferece uma experiência fluida tanto para clientes que buscam horários quanto para empresas que precisam organizar sua rotina.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Tecnologias Utilizadas
 
-## Expanding the ESLint configuration
+Este projeto foi construído com o que há de mais moderno no ecossistema Front-end:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* **React**: Biblioteca para construção de interfaces dinâmicas.
+* **TypeScript**: Tipagem estática para maior segurança e produtividade no código.
+* **CSS Global**: Estilização personalizada focada em *Glassmorphism* e alto contraste.
+* **Lucide React**: Biblioteca de ícones modernos e leves.
+* **Vite**: Ferramenta de build extremamente rápida para o desenvolvimento.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🛠️ Funcionalidades
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+* **Interface Responsiva**: Design adaptável para Celulares, Tablets e Desktops.
+* **Fluxo de Autenticação Dinâmico**: 
+    * Login social com **Google Auth**.
+    * Criação de conta com validação de telefone (Formato: `011 952378000`).
+    * Recuperação de senha integrada.
+* **Visões de Usuário**: Diferenciação entre o fluxo de **Cliente** e **Estabelecimento**.
+* **Efeito Glassmorphism**: Interface premium com desfoque de fundo e transparências elegantes.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📦 Como executar o projeto
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1.  Clone o repositório:
+    ```bash
+    git clone [https://github.com/seu-usuario/agenda-pro.git](https://github.com/seu-usuario/agenda-pro.git)
+    ```
+2.  Entre na pasta do projeto:
+    ```bash
+    cd agenda-pro
+    ```
+3.  Instale as dependências:
+    ```bash
+    npm install
+    ```
+4.  Inicie o servidor de desenvolvimento:
+    ```bash
+    npm run dev
+    ```
+
+---
+
+## ✒️ Autor
+
+Desenvolvido por **Bruno Oliveira**.
+* Estudante de Análise e Desenvolvimento de Sistemas na Faculdade FAM.
+* Previsão de conclusão: Agosto de 2027.
