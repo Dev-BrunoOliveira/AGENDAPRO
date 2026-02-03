@@ -22,7 +22,7 @@ export default function App() {
       <main className="content-wrapper">
         <section className="hero-section">
           <div className="hero-text">
-            <h1>Transforme seu negócio com <br /><span className="text-cyan">AgendaPro</span></h1>
+            <h1>Agende serviços com <br /><span className="text-cyan">AgendaPro</span></h1>
             <p>A plataforma completa de agendamentos para sua gestão.</p>
           </div>
 
