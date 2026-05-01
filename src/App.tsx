@@ -47,6 +47,11 @@ export default function App() {
               <h3>Referencia</h3>
               <p>9 a cada 10 empresas que utilizam nossos serviços, tiveram produtividade aumentada em até 100%.</p>
             </div>
+            <div className="feature-card">
+              <div className="icon-box"><Star /></div>
+              <h3>Filtragem de Clientes</h3>
+              <p>Encontre seus clientes com facilidade, utilizando filtros personalizados.</p>
+            </div>
           </div>
         </section>
       </main>
