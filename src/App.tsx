@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { Calendar, Users, Star, X, ArrowLeft } from "lucide-react";
+import { supabase } from "./supabaseClient";
 
 export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -9,8 +10,19 @@ export default function App() {
 
   const openAuth = (role: "CLIENT" | "BUSINESS") => {
     setUserRole(role);
-    setAuthMode("login"); 
+    setAuthMode("login");
     setIsAuthModalOpen(true);
+  };
+
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+
+    if (error) console.error("Erro no login:", error.message);
   };
 
   return (
@@ -22,35 +34,42 @@ export default function App() {
       <main className="content-wrapper">
         <section className="hero-section">
           <div className="hero-text">
-            <h1>Agende serviços com <br /><span className="text-cyan">AgendaPro</span></h1>
+            <h1>
+              Agende serviços com <br />
+              <span className="text-cyan">AgendaPro</span>
+            </h1>
             <p>A plataforma completa de agendamentos para sua gestão.</p>
           </div>
 
           <div className="btn-group">
-            <button className="btn-primary" onClick={() => openAuth("CLIENT")}>Começar como Cliente</button>
-            <button className="btn-secondary" onClick={() => openAuth("BUSINESS")}>Sou Estabelecimento</button>
+            <button className="btn-primary" onClick={() => openAuth("CLIENT")}>
+              Começar como Cliente
+            </button>
+            <button className="btn-secondary" onClick={() => openAuth("BUSINESS")}>
+              Sou Estabelecimento
+            </button>
           </div>
 
           <div className="features-grid">
             <div className="feature-card">
               <div className="icon-box"><Calendar /></div>
               <h3>Agendamento</h3>
-              <p>Sistema que evita conflitos, e facilidade de uso tanto web quanto no mobile.</p>
+              <p>Sistema que evita conflitos e facilita o uso web e mobile.</p>
             </div>
             <div className="feature-card">
               <div className="icon-box"><Users /></div>
               <h3>Clientes</h3>
-              <p>Gerencie seus clientes facilmente, e otimize o seu tempo.</p>
+              <p>Gerencie seus clientes facilmente e otimize seu tempo.</p>
             </div>
             <div className="feature-card">
               <div className="icon-box"><Star /></div>
               <h3>Referencia</h3>
-              <p>9 a cada 10 empresas que utilizam nossos serviços, tiveram produtividade aumentada em até 100%.</p>
+              <p>9 a cada 10 empresas que utilizam nossos serviços aumentaram a produtividade.</p>
             </div>
             <div className="feature-card">
               <div className="icon-box"><Star /></div>
               <h3>Filtragem de Clientes</h3>
-              <p>Encontre seus clientes com facilidade, utilizando filtros personalizados.</p>
+              <p>Encontre seus clientes com facilidade utilizando filtros personalizados.</p>
             </div>
           </div>
         </section>
@@ -59,12 +78,15 @@ export default function App() {
       {isAuthModalOpen && (
         <div className="modal-overlay" onClick={() => setIsAuthModalOpen(false)}>
           <div className="modal-content glass" onClick={(e) => e.stopPropagation()}>
-            <button className="close-btn" onClick={() => setIsAuthModalOpen(false)}><X size={24} /></button>
-            
-            {/* Cabeçalho Dinâmico */}
+            <button className="close-btn" onClick={() => setIsAuthModalOpen(false)}>
+              <X size={24} />
+            </button>
+
             <div className="modal-header">
               {authMode !== "login" && (
-                <button className="back-btn" onClick={() => setAuthMode("login")}><ArrowLeft size={20} /></button>
+                <button className="back-btn" onClick={() => setAuthMode("login")}>
+                  <ArrowLeft size={20} />
+                </button>
               )}
               <h2 className="modal-title">
                 {authMode === "login" && "Acessar Conta"}
@@ -75,11 +97,16 @@ export default function App() {
 
             {authMode !== "forgot" && (
               <>
-                <button className="btn-google">
-                  <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+                <button className="btn-google" onClick={handleGoogleLogin}>
+                  <img
+                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                    alt="Google"
+                  />
                   {authMode === "login" ? "Entrar com Google" : "Cadastrar com Google"}
                 </button>
-                <div className="divider"><span>ou use seu e-mail</span></div>
+                <div className="divider">
+                  <span>ou use seu e-mail</span>
+                </div>
               </>
             )}
 
@@ -87,15 +114,17 @@ export default function App() {
               {authMode === "register" && (
                 <>
                   <input type="text" placeholder="Nome Completo" required />
-                  <input type="tel" placeholder="Telefone: 011 952378000" pattern="[0-9]{3} [0-9]{9}" required />
+                  <input
+                    type="tel"
+                    placeholder="Telefone: 011 952378000"
+                    pattern="[0-9]{3} [0-9]{9}"
+                    required
+                  />
                 </>
               )}
 
               <input type="email" placeholder="E-mail" required />
-              
-              {authMode !== "forgot" && (
-                <input type="password" placeholder="Senha" required />
-              )}
+              {authMode !== "forgot" && <input type="password" placeholder="Senha" required />}
 
               {authMode === "login" && (
                 <button type="button" className="link-text" onClick={() => setAuthMode("forgot")}>
@@ -111,11 +140,12 @@ export default function App() {
             </form>
 
             <div className="modal-footer">
-              {authMode === "login" ? (
-                <p>Não tem conta? <button onClick={() => setAuthMode("register")}>Cadastre-se</button></p>
-              ) : (
-                <p>Já possui conta? <button onClick={() => setAuthMode("login")}>Fazer Login</button></p>
-              )}
+              <p>
+                {authMode === "login" ? "Não tem conta? " : "Já possui conta? "}
+                <button onClick={() => setAuthMode(authMode === "login" ? "register" : "login")}>
+                  {authMode === "login" ? "Cadastre-se" : "Fazer Login"}
+                </button>
+              </p>
             </div>
           </div>
         </div>
