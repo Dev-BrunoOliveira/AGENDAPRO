@@ -13,11 +13,9 @@ export default function App() {
     "landing",
   );
 
-  // MONITORAMENTO DE SESSÃO: Troca de tela automática ao logar/deslogar
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
-        // Busca o cargo (role) salvo nos metadados do usuário
         const role = session.user.user_metadata.role;
         setView(role === "BUSINESS" ? "business-dash" : "client-dash");
         setIsAuthModalOpen(false);
@@ -33,7 +31,6 @@ export default function App() {
     setIsAuthModalOpen(true);
   };
 
-  // AUTENTICAÇÃO: E-mail e Senha
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -66,7 +63,6 @@ export default function App() {
     }
   };
 
-  // LOGIN SOCIAL: Google
   const handleGoogleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -78,7 +74,6 @@ export default function App() {
     if (error) console.error("Erro no login:", error.message);
   };
 
-  // TELA INTERNA: DASHBOARD DO CLIENTE
   function ClientDashboard() {
     return (
       <div className="dash-container">
@@ -111,7 +106,6 @@ export default function App() {
     );
   }
 
-  // TELA INTERNA: DASHBOARD DA EMPRESA
   function BusinessDashboard() {
     return (
       <div className="dash-container">
