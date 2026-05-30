@@ -1,42 +1,266 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+/* Dashboard layout */
+.dash-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #0a0a0a;
+}
+
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dash-header h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: white;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stats-quick {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #00c2cb;
+  font-weight: 600;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-logout {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+
+.btn-logout:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dash-content {
+  flex: 1;
   padding: 2rem;
-  text-align: center;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.next-appointments h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ccc;
+  margin-bottom: 1rem;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.appointment-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-radius: 16px;
+  margin-bottom: 1rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.appointment-card .info .service {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: white;
+  margin-bottom: 0.3rem;
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
+.appointment-card .info .establishment {
   color: #888;
+  font-size: 0.95rem;
+}
+
+.appointment-card .date-time {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  color: #00c2cb;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.btn-new-schedule {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  background: #008394;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-new-schedule:hover {
+  background: #00a7b5;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  flex: 1;
+  height: calc(100vh - 73px);
+}
+
+.sidebar {
+  padding: 1.5rem 1rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar nav button {
+  background: none;
+  border: none;
+  color: #888;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.sidebar nav button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.sidebar nav button.active {
+  background: rgba(0, 131, 148, 0.2);
+  color: #00c2cb;
+}
+
+.agenda-view {
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.agenda-view h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ccc;
+  margin-bottom: 1.5rem;
+}
+
+.agenda-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.agenda-table th,
+.agenda-table td {
+  padding: 1rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.agenda-table th {
+  color: #888;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.agenda-table td {
+  color: #e5e7eb;
+  font-size: 0.95rem;
+}
+
+.agenda-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.status {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.status.confirmed {
+  background: rgba(0, 194, 203, 0.15);
+  color: #00c2cb;
+}
+
+.status.pending {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+}
+
+.status.cancelled {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.content-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .sidebar nav {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .dash-header {
+    padding: 1rem;
+  }
+
+  .appointment-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .appointment-card .date-time {
+    align-items: flex-start;
+  }
 }

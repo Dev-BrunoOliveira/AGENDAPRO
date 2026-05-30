@@ -1,8 +1,13 @@
-* {
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
 }
 
 body {

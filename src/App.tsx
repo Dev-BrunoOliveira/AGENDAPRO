@@ -3,6 +3,86 @@ import "./App.css";
 import { Calendar, Users, Star, X, ArrowLeft } from "lucide-react";
 import { supabase } from "./supabaseClient";
 
+function ClientDashboard() {
+  return (
+    <div className="dash-container">
+      <header className="dash-header glass">
+        <h2>Olá, Bruno!</h2>
+        <button className="btn-logout" onClick={() => supabase.auth.signOut()}>
+          Sair
+        </button>
+      </header>
+      <main className="dash-content">
+        <section className="next-appointments">
+          <h3>Seus Próximos Agendamentos</h3>
+          <div className="appointment-card glass">
+            <div className="info">
+              <p className="service">Corte de Cabelo + Barba</p>
+              <p className="establishment">Barbearia Treze Core</p>
+            </div>
+            <div className="date-time">
+              <span>15/05</span>
+              <span>14:30</span>
+            </div>
+          </div>
+        </section>
+        <button className="btn-new-schedule">Novo Agendamento</button>
+      </main>
+    </div>
+  );
+}
+
+function BusinessDashboard() {
+  return (
+    <div className="dash-container">
+      <header className="dash-header glass">
+        <h2>Painel Administrativo</h2>
+        <div className="header-actions">
+          <div className="stats-quick glass">Total Hoje: 12 Cortes</div>
+          <button
+            className="btn-logout"
+            onClick={() => supabase.auth.signOut()}
+          >
+            Sair
+          </button>
+        </div>
+      </header>
+      <div className="admin-grid">
+        <aside className="sidebar glass">
+          <nav>
+            <button className="active">Agenda</button>
+            <button>Clientes</button>
+            <button>Configurações</button>
+          </nav>
+        </aside>
+        <main className="agenda-view">
+          <h3>Agenda do Dia</h3>
+          <table className="agenda-table glass">
+            <thead>
+              <tr>
+                <th>Horário</th>
+                <th>Cliente</th>
+                <th>Serviço</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>09:00</td>
+                <td>Carlos Silva</td>
+                <td>Barba Terapia</td>
+                <td>
+                  <span className="status confirmed">Confirmado</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </main>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [userRole, setUserRole] = useState<"CLIENT" | "BUSINESS" | null>(null);
@@ -14,7 +94,7 @@ export default function App() {
   );
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         const role = session.user.user_metadata.role;
         setView(role === "BUSINESS" ? "business-dash" : "client-dash");
@@ -23,6 +103,7 @@ export default function App() {
         setView("landing");
       }
     });
+    return () => subscription.unsubscribe();
   }, []);
 
   const openAuth = (role: "CLIENT" | "BUSINESS") => {
@@ -35,6 +116,16 @@ export default function App() {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const email = formData.get("email") as string;
+
+    if (authMode === "forgot") {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}?reset=true`,
+      });
+      if (error) alert("Erro: " + error.message);
+      else alert("Link de recuperação enviado para " + email);
+      return;
+    }
+
     const password = formData.get("password") as string;
 
     if (authMode === "login") {
@@ -74,92 +165,8 @@ export default function App() {
     if (error) console.error("Erro no login:", error.message);
   };
 
-  function ClientDashboard() {
-    return (
-      <div className="dash-container">
-        <header className="dash-header glass">
-          <h2>Olá, Bruno!</h2>
-          <button
-            className="btn-logout"
-            onClick={() => supabase.auth.signOut()}
-          >
-            Sair
-          </button>
-        </header>
-        <main className="dash-content">
-          <section className="next-appointments">
-            <h3>Seus Próximos Agendamentos</h3>
-            <div className="appointment-card glass">
-              <div className="info">
-                <p className="service">Corte de Cabelo + Barba</p>
-                <p className="establishment">Barbearia Treze Core</p>
-              </div>
-              <div className="date-time">
-                <span>15/05</span>
-                <span>14:30</span>
-              </div>
-            </div>
-          </section>
-          <button className="btn-new-schedule">Novo Agendamento</button>
-        </main>
-      </div>
-    );
-  }
-
-  function BusinessDashboard() {
-    return (
-      <div className="dash-container">
-        <header className="dash-header glass">
-          <h2>Painel Administrativo</h2>
-          <div className="header-actions">
-            <div className="stats-quick glass">Total Hoje: 12 Cortes</div>
-            <button
-              className="btn-logout"
-              onClick={() => supabase.auth.signOut()}
-            >
-              Sair
-            </button>
-          </div>
-        </header>
-        <div className="admin-grid">
-          <aside className="sidebar glass">
-            <nav>
-              <button className="active">Agenda</button>
-              <button>Clientes</button>
-              <button>Configurações</button>
-            </nav>
-          </aside>
-          <main className="agenda-view">
-            <h3>Agenda do Dia</h3>
-            <table className="agenda-table glass">
-              <thead>
-                <tr>
-                  <th>Horário</th>
-                  <th>Cliente</th>
-                  <th>Serviço</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>09:00</td>
-                  <td>Carlos Silva</td>
-                  <td>Barba Terapia</td>
-                  <td>
-                    <span className="status confirmed">Confirmado</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </main>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="app-container">
-      {/* --- TELA: LANDING PAGE --- */}
       {view === "landing" && (
         <>
           <div className="main-bg">
@@ -212,7 +219,7 @@ export default function App() {
                   <div className="icon-box">
                     <Star />
                   </div>
-                  <h3>Referencia</h3>
+                  <h3>Referência</h3>
                   <p>9 a cada 10 empresas aumentaram a produtividade.</p>
                 </div>
                 <div className="feature-card">
@@ -230,13 +237,9 @@ export default function App() {
         </>
       )}
 
-      {/* --- TELA: DASHBOARD CLIENTE --- */}
       {view === "client-dash" && <ClientDashboard />}
-
-      {/* --- TELA: DASHBOARD EMPRESA --- */}
       {view === "business-dash" && <BusinessDashboard />}
 
-      {/* --- MODAL DE AUTENTICAÇÃO --- */}
       {isAuthModalOpen && (
         <div
           className="modal-overlay"
