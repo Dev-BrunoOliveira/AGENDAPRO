@@ -94,7 +94,9 @@ export default function App() {
   );
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         const role = session.user.user_metadata.role;
         setView(role === "BUSINESS" ? "business-dash" : "client-dash");
@@ -221,15 +223,6 @@ export default function App() {
                   </div>
                   <h3>Referência</h3>
                   <p>9 a cada 10 empresas aumentaram a produtividade.</p>
-                </div>
-                <div className="feature-card">
-                  <div className="icon-box">
-                    <Star />
-                  </div>
-                  <h3>Filtragem</h3>
-                  <p>
-                    Encontre seus clientes com facilidade utilizando filtros.
-                  </p>
                 </div>
               </div>
             </section>
