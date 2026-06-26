@@ -281,7 +281,8 @@ body {
   gap: 0.8rem;
 }
 
-.auth-form input {
+.auth-form input,
+.auth-form select {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1rem;
@@ -292,9 +293,15 @@ body {
   transition: 0.3s;
 }
 
-.auth-form input:focus {
+.auth-form input:focus,
+.auth-form select:focus {
   border-color: #008394;
   background: rgba(255, 255, 255, 0.12);
+}
+
+.auth-form select option {
+  background: #111;
+  color: white;
 }
 
 .link-text {
