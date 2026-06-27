@@ -87,8 +87,15 @@ export function AuthModal({
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content glass" onClick={(e) => e.stopPropagation()}>
+    <div 
+      className="modal-overlay" 
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
+      <div className="modal-content glass">
         <button className="close-btn" onClick={onClose} disabled={loading}>
           <X size={24} />
         </button>

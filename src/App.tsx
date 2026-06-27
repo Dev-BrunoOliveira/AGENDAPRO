@@ -19,6 +19,13 @@ export default function App() {
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const barberRef = params.get("b");
+    if (barberRef) {
+      localStorage.setItem("barberRef", barberRef);
+      localStorage.setItem("autoOpenModal", "true");
+    }
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {

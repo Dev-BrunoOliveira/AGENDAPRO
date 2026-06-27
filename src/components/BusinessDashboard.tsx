@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import type { FormEvent } from "react";
 import { supabase } from "../supabaseClient";
 import { toast } from "./Toast";
+import { Settings, Calendar } from "lucide-react";
 
 interface Appointment {
   id: string;
@@ -16,6 +18,9 @@ export function BusinessDashboard({ userId }: { userId: string }) {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [fetching, setFetching] = useState(true);
   const [loadingActionId, setLoadingActionId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"agenda" | "config">("agenda");
+  const [businessName, setBusinessName] = useState("");
+  const [savingProfile, setSavingProfile] = useState(false);
 
   const fetchAppointments = async () => {
     const { data, error } = await supabase
@@ -31,8 +36,20 @@ export function BusinessDashboard({ userId }: { userId: string }) {
     setFetching(false);
   };
 
+  const fetchProfile = async () => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("full_name")
+      .eq("id", userId)
+      .single();
+    if (!error && data) {
+      setBusinessName(data.full_name);
+    }
+  };
+
   useEffect(() => {
     fetchAppointments();
+    fetchProfile();
   }, [userId]);
 
   const handleUpdateStatus = async (id: string, status: string) => {
@@ -49,6 +66,28 @@ export function BusinessDashboard({ userId }: { userId: string }) {
       fetchAppointments();
     }
     setLoadingActionId(null);
+  };
+
+  const handleCopyLink = () => {
+    const link = `${window.location.origin}/?b=${userId}`;
+    navigator.clipboard.writeText(link);
+    toast("Link copiado! Envie para seus clientes.", "success");
+  };
+
+  const handleUpdateProfile = async (e: FormEvent) => {
+    e.preventDefault();
+    setSavingProfile(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ full_name: businessName })
+      .eq("id", userId);
+
+    if (error) {
+      toast("Erro ao atualizar perfil: " + error.message, "error");
+    } else {
+      toast("Perfil atualizado com sucesso!", "success");
+    }
+    setSavingProfile(false);
   };
 
   return (
@@ -68,6 +107,13 @@ export function BusinessDashboard({ userId }: { userId: string }) {
             Agendamentos
           </div>
           <button
+            className="btn-primary"
+            onClick={handleCopyLink}
+            style={{ padding: "0.5rem 1rem", fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "0.5rem" }}
+          >
+            Copiar Meu Link
+          </button>
+          <button
             className="btn-logout"
             onClick={() => supabase.auth.signOut()}
           >
@@ -77,13 +123,28 @@ export function BusinessDashboard({ userId }: { userId: string }) {
       </header>
       <div className="admin-grid">
         <aside className="sidebar glass">
-          <nav>
-            <button className="active">Agenda</button>
+          <nav style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            <button 
+              className={activeTab === "agenda" ? "active" : ""} 
+              onClick={() => setActiveTab("agenda")}
+              style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "flex-start" }}
+            >
+              <Calendar size={18} /> Agenda
+            </button>
+            <button 
+              className={activeTab === "config" ? "active" : ""} 
+              onClick={() => setActiveTab("config")}
+              style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "flex-start" }}
+            >
+              <Settings size={18} /> Configurações
+            </button>
           </nav>
         </aside>
         <main className="agenda-view">
-          <h3>Agenda do Dia</h3>
-          <table className="agenda-table glass">
+          {activeTab === "agenda" && (
+            <>
+              <h3>Agenda do Dia</h3>
+              <table className="agenda-table glass">
             <thead>
               <tr>
                 <th>Data</th>
@@ -159,6 +220,29 @@ export function BusinessDashboard({ userId }: { userId: string }) {
               )}
             </tbody>
           </table>
+          </>
+          )}
+
+          {activeTab === "config" && (
+            <div className="config-section glass" style={{ padding: "2rem", borderRadius: "24px" }}>
+              <h3>Configurações do Estabelecimento</h3>
+              <form className="auth-form" onSubmit={handleUpdateProfile} style={{ marginTop: "1.5rem", maxWidth: "400px" }}>
+                <label style={{ display: "block", marginBottom: "0.5rem", color: "#ccc", fontSize: "0.9rem" }}>
+                  Nome do Estabelecimento (Exibido para os clientes)
+                </label>
+                <input
+                  type="text"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
+                  required
+                  disabled={savingProfile}
+                />
+                <button type="submit" className="btn-submit" disabled={savingProfile}>
+                  {savingProfile ? "Salvando..." : "Salvar Alterações"}
+                </button>
+              </form>
+            </div>
+          )}
         </main>
       </div>
     </div>

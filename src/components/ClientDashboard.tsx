@@ -26,6 +26,9 @@ export function ClientDashboard({ userId }: { userId: string }) {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
+  const barberRef = localStorage.getItem("barberRef");
+  const [preSelectedBusinessName, setPreSelectedBusinessName] = useState<string | null>(null);
+
   const fetchAppointments = async () => {
     const { data, error } = await supabase
       .from("appointments")
@@ -41,19 +44,37 @@ export function ClientDashboard({ userId }: { userId: string }) {
   };
 
   const fetchBusinesses = async () => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("id, full_name")
-      .eq("role", "BUSINESS");
-    if (!error && data) {
-      setBusinesses(data);
+    if (barberRef) {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", barberRef)
+        .single();
+      if (!error && data) {
+        setPreSelectedBusinessName(data.full_name);
+      } else {
+        setPreSelectedBusinessName("Barbeiro não encontrado");
+      }
+    } else {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name")
+        .eq("role", "BUSINESS");
+      if (!error && data) {
+        setBusinesses(data);
+      }
     }
   };
 
   useEffect(() => {
     fetchAppointments();
     fetchBusinesses();
-  }, [userId]);
+
+    if (localStorage.getItem("autoOpenModal") === "true") {
+      setIsModalOpen(true);
+      localStorage.removeItem("autoOpenModal");
+    }
+  }, [userId, barberRef]);
 
   const handleNewAppointment = async (e: FormEvent) => {
     e.preventDefault();
@@ -101,7 +122,6 @@ export function ClientDashboard({ userId }: { userId: string }) {
     setLoading(false);
   };
 
-  // Get today's date in YYYY-MM-DD format for min attribute
   const todayDate = new Date().toISOString().split("T")[0];
 
   return (
@@ -172,11 +192,15 @@ export function ClientDashboard({ userId }: { userId: string }) {
       </main>
 
       {isModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div
-            className="modal-content glass"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div 
+          className="modal-overlay" 
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsModalOpen(false);
+            }
+          }}
+        >
+          <div className="modal-content glass">
             <button
               className="close-btn"
               onClick={() => setIsModalOpen(false)}
@@ -190,19 +214,36 @@ export function ClientDashboard({ userId }: { userId: string }) {
               onSubmit={handleNewAppointment}
               style={{ marginTop: "20px" }}
             >
-              <select
-                name="business_id"
-                required
-                className="auth-form-select"
-                disabled={loading}
-              >
-                <option value="">Selecione o Estabelecimento</option>
-                {businesses.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.full_name}
-                  </option>
-                ))}
-              </select>
+              {barberRef ? (
+                <>
+                  <input type="hidden" name="business_id" value={barberRef} />
+                  <div style={{
+                    background: "rgba(255, 255, 255, 0.08)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    padding: "1rem",
+                    borderRadius: "14px",
+                    color: "white",
+                    textAlign: "left"
+                  }}>
+                    <span style={{ fontSize: "0.85rem", color: "#aaa" }}>Agendando com:</span><br/>
+                    <strong>{preSelectedBusinessName || "Carregando..."}</strong>
+                  </div>
+                </>
+              ) : (
+                <select
+                  name="business_id"
+                  required
+                  className="auth-form-select"
+                  disabled={loading}
+                >
+                  <option value="">Selecione o Estabelecimento</option>
+                  {businesses.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.full_name}
+                    </option>
+                  ))}
+                </select>
+              )}
               <input
                 name="service"
                 type="text"
