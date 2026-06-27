@@ -79,8 +79,7 @@ export function BusinessDashboard({ userId }: { userId: string }) {
     setSavingProfile(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ full_name: businessName })
-      .eq("id", userId);
+      .upsert({ id: userId, full_name: businessName, role: "BUSINESS" });
 
     if (error) {
       toast("Erro ao atualizar perfil: " + error.message, "error");
